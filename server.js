@@ -1,32 +1,35 @@
-const http = require('http');
 const fs = require('fs');
+const express = require('express');
+const app = express();
+const port = 3000;
 
-http.createServer((req, res) => {
-  res.writeHead(200, {'Content-Type': 'text/html'});
+app.get('/about', function(req, res) {
+  fs.readFile('about.html', (err, data) => {
+    res.write(data);
+    return res.end();
+  });
+})
 
-  const url = req.url;
-  
-  if (url === '/about') {
-    fs.readFile('about.html', (err, data) => {
-      res.write(data);
-      return res.end();
-    });
-  } else if (url === '/contact') {
-    fs.readFile('contact-me.html', (err, data) => {
-      res.write(data);
-      return res.end();
-    });
-  } else if (url === '/') {
-    fs.readFile('index.html', (err, data) => {
-      res.write(data);
-      return res.end();
-    });
-  } else {
-    fs.readFile('404.html', (err, data) => {
-      res.write(data);
-      return res.end();
-    });
-  }
-}).listen(3000, () => {
-  console.log("server start at port 3000");
-});
+app.get('/contact', function(req, res) {
+  fs.readFile('contact-me.html', (err, data) => {
+    res.write(data);
+    return res.end();
+  });
+})
+app.get('/', function(req, res) {
+  fs.readFile('index.html', (err, data) => {
+    res.write(data);
+    return res.end();
+  });
+})
+app.all('*', function(req, res) {
+  fs.readFile('404.html', (err, data) => {
+    res.write(data);
+    return res.end();
+  });
+})
+
+
+app.listen(port, function() {
+  console.log(`Listening on port ${port}`)
+})
